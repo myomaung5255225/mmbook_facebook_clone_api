@@ -7,6 +7,7 @@ import path from "path";
 import { v4 } from "uuid";
 import Post from "./routes/post";
 import multer, { FileFilterCallback } from "multer";
+import Comment from "./routes/comment";
 dotenv.config();
 const db = process.env.DB || "";
 const port = process.env.PORT || 4000;
@@ -45,6 +46,7 @@ mongoose
     app.use(express.json());
     app.use("/api/v1/user", User);
     app.use("/api/v1/post", Post);
+    app.use("/api/v1/comment", Comment);
     app.use(errors);
   })
   .catch((err) => {

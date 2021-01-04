@@ -11,7 +11,10 @@ export const get_allposts = async (
   next: NextFunction
 ) => {
   try {
-    const posts = await Post.find().populate(["comments", "user.profile"]);
+    const posts = await Post.find()
+      .populate("comment")
+      .populate("user", "profile");
+
     if (posts) {
       res.status(200).json({
         Data: posts,
@@ -140,7 +143,7 @@ export const updatePost = async (
     if (post) {
       if (req.file) {
         post.body = req.body.description;
-        post.image = req.file.path;
+        post.image = req.headers.host + "/" + req.file.path;
         const result = await post.save();
         if (result) {
           res.status(200).json({

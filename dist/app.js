@@ -12,6 +12,7 @@ var path_1 = __importDefault(require("path"));
 var uuid_1 = require("uuid");
 var post_1 = __importDefault(require("./routes/post"));
 var multer_1 = __importDefault(require("multer"));
+var comment_1 = __importDefault(require("./routes/comment"));
 dotenv_1.default.config();
 var db = process.env.DB || "";
 var port = process.env.PORT || 4000;
@@ -50,6 +51,7 @@ mongoose_1.default
     app.use(express_1.default.json());
     app.use("/api/v1/user", user_1.default);
     app.use("/api/v1/post", post_1.default);
+    app.use("/api/v1/comment", comment_1.default);
     app.use(errors_1.default);
 })
     .catch(function (err) {

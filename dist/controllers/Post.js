@@ -50,7 +50,9 @@ var get_allposts = function (_req, res, next) { return __awaiter(void 0, void 0,
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, post_1.default.find().populate(["comments", "user.profile"])];
+                return [4 /*yield*/, post_1.default.find()
+                        .populate("comment")
+                        .populate("user", "profile")];
             case 1:
                 posts = _a.sent();
                 if (posts) {
@@ -196,7 +198,7 @@ var updatePost = function (req, res, next) { return __awaiter(void 0, void 0, vo
                 if (!post) return [3 /*break*/, 6];
                 if (!req.file) return [3 /*break*/, 5];
                 post.body = req.body.description;
-                post.image = req.file.path;
+                post.image = req.headers.host + "/" + req.file.path;
                 return [4 /*yield*/, post.save()];
             case 2:
                 result = _a.sent();
