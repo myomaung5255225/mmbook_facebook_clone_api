@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.signup = void 0;
+exports.delete_user = exports.update_avatar = exports.updateprofile = exports.profile = exports.signin = exports.signup = void 0;
 var express_validator_1 = require("express-validator");
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var user_1 = __importDefault(require("../models/user"));
@@ -52,7 +52,7 @@ var signup = function (req, res, next) { return __awaiter(void 0, void 0, void 0
                 _a.trys.push([0, 2, , 3]);
                 errors = express_validator_1.validationResult(req);
                 if (!errors.isEmpty()) {
-                    error = new Error('validation failed');
+                    error = new Error("validation failed");
                     error.data = errors.array();
                     error.statusCode = 422;
                     throw error;
@@ -60,23 +60,23 @@ var signup = function (req, res, next) { return __awaiter(void 0, void 0, void 0
                 hash_password = bcrypt_1.default.hashSync(req.body.password, 12);
                 userData = {
                     email: req.body.email,
-                    password: hash_password
+                    password: hash_password,
                 };
                 user = new user_1.default(userData);
                 return [4 /*yield*/, user.save()];
             case 1:
                 result = _a.sent();
                 if (result) {
-                    token = jsonwebtoken_1.default.sign({ userId: result.id }, process.env.SECRET || 'secret', { expiresIn: '1d' });
+                    token = jsonwebtoken_1.default.sign({ userId: result.id }, process.env.SECRET || "secret", { expiresIn: "1d" });
                     res.status(201).json({
-                        Data: result,
-                        message: 'success',
+                        Data: result.email,
+                        message: "success",
                         status: 1,
-                        access_token: token
+                        access_token: token,
                     });
                 }
                 else {
-                    error = new Error('User Register fail');
+                    error = new Error("User Register fail");
                     error.statusCode = 422;
                     throw error;
                 }
@@ -93,4 +93,236 @@ var signup = function (req, res, next) { return __awaiter(void 0, void 0, void 0
     });
 }); };
 exports.signup = signup;
+// signin
+var signin = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var errors, error, user, check_password, token, error, error, error_2;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                errors = express_validator_1.validationResult(req);
+                if (!errors.isEmpty()) {
+                    error = new Error("validation failed");
+                    error.data = errors.array();
+                    error.statusCode = 422;
+                    throw error;
+                }
+                return [4 /*yield*/, user_1.default.findOne({ email: req.body.email })];
+            case 1:
+                user = _a.sent();
+                if (user) {
+                    check_password = bcrypt_1.default.compareSync(req.body.password, user.password);
+                    if (check_password) {
+                        token = jsonwebtoken_1.default.sign({ userId: user.id }, process.env.SECRET || "secret", { expiresIn: "1d" });
+                        res.status(200).json({
+                            Data: user.email,
+                            message: "success",
+                            status: 1,
+                            access_token: token,
+                        });
+                    }
+                    else {
+                        error = new Error("Password not match!");
+                        error.statusCode = 404;
+                        throw error;
+                    }
+                }
+                else {
+                    error = new Error("User does not exist!");
+                    error.statusCode = 404;
+                    throw error;
+                }
+                return [3 /*break*/, 3];
+            case 2:
+                error_2 = _a.sent();
+                if (!error_2.statusCode) {
+                    error_2.statusCode = 500;
+                }
+                next(error_2);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+exports.signin = signin;
+// get profile
+var profile = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var user, error, error_3;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, user_1.default.findById(req.userId)];
+            case 1:
+                user = _a.sent();
+                if (user) {
+                    res.status(200).json({
+                        Data: user,
+                        message: "success",
+                        status: 1,
+                    });
+                }
+                else {
+                    error = new Error("User does not Found!");
+                    error.statusCode = 401;
+                    throw error;
+                }
+                return [3 /*break*/, 3];
+            case 2:
+                error_3 = _a.sent();
+                if (!error_3.statusCode) {
+                    error_3.statusCode = 500;
+                }
+                next(error_3);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+exports.profile = profile;
+// update profile
+var updateprofile = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var errors, error, user, result, error, error, error_4;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 5, , 6]);
+                errors = express_validator_1.validationResult(req);
+                if (!errors.isEmpty()) {
+                    error = new Error("Validation failed!");
+                    error.data = errors.array();
+                    error.statusCode = 422;
+                    throw error;
+                }
+                return [4 /*yield*/, user_1.default.findById(req.userId)];
+            case 1:
+                user = _a.sent();
+                if (!user) return [3 /*break*/, 3];
+                user.profile.fullname = req.body.fullname;
+                user.profile.address = req.body.address;
+                user.profile.city = req.body.city;
+                user.profile.country = req.body.country;
+                return [4 /*yield*/, user.save()];
+            case 2:
+                result = _a.sent();
+                if (result) {
+                    res.status(201).json({
+                        Data: result,
+                        status: 1,
+                        message: "success",
+                    });
+                }
+                else {
+                    error = new Error("something wrong!");
+                    error.statusCode = 422;
+                    throw error;
+                }
+                return [3 /*break*/, 4];
+            case 3:
+                error = new Error("User does not exist!");
+                error.statusCode = 404;
+                throw error;
+            case 4: return [3 /*break*/, 6];
+            case 5:
+                error_4 = _a.sent();
+                if (!error_4.statusCode) {
+                    error_4.statusCode = 500;
+                }
+                next(error_4);
+                return [3 /*break*/, 6];
+            case 6: return [2 /*return*/];
+        }
+    });
+}); };
+exports.updateprofile = updateprofile;
+var update_avatar = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var errors, error, user, result, error, error, error, error_5;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 7, , 8]);
+                errors = express_validator_1.validationResult(req);
+                if (!errors.isEmpty()) {
+                    error = new Error("validation failed");
+                    error.data = errors.array();
+                    error.statusCode = 422;
+                    throw error;
+                }
+                return [4 /*yield*/, user_1.default.findById(req.userId)];
+            case 1:
+                user = _a.sent();
+                if (!user) return [3 /*break*/, 5];
+                if (!req.file) return [3 /*break*/, 3];
+                user.avatar = req.headers.host + "/" + req.file.path;
+                return [4 /*yield*/, user.save()];
+            case 2:
+                result = _a.sent();
+                if (result) {
+                    res.status(201).json({
+                        Data: result,
+                        status: 1,
+                        message: "success",
+                    });
+                }
+                else {
+                    error = new Error("something wrong!");
+                    error.statusCode = 404;
+                    throw error;
+                }
+                return [3 /*break*/, 4];
+            case 3:
+                error = new Error("please select file!");
+                error.statusCode = 404;
+                throw error;
+            case 4: return [3 /*break*/, 6];
+            case 5:
+                error = new Error("User does not found!");
+                error.statusCode = 404;
+                throw error;
+            case 6: return [3 /*break*/, 8];
+            case 7:
+                error_5 = _a.sent();
+                if (!error_5.statusCode) {
+                    error_5.statusCode = 500;
+                }
+                next(error_5);
+                return [3 /*break*/, 8];
+            case 8: return [2 /*return*/];
+        }
+    });
+}); };
+exports.update_avatar = update_avatar;
+var delete_user = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var user, error, error_6;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, user_1.default.findByIdAndDelete(req.userId)];
+            case 1:
+                user = _a.sent();
+                if (user) {
+                    res.status(200).json({
+                        message: user.profile.fullname + " is successfully deleted.",
+                        status: 1,
+                    });
+                }
+                else {
+                    error = new Error("User does not found!");
+                    error.statusCode = 404;
+                    throw error;
+                }
+                return [3 /*break*/, 3];
+            case 2:
+                error_6 = _a.sent();
+                if (!error_6.statusCode) {
+                    error_6.statusCode = 500;
+                }
+                next(error_6);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+exports.delete_user = delete_user;
 //# sourceMappingURL=user.js.map

@@ -8,38 +8,38 @@ var mongoose_2 = __importDefault(require("mongoose"));
 var userSchema = new mongoose_1.Schema({
     email: {
         type: String,
-        required: [true, 'require email address!'],
-        unique: [true, 'Your email is already used.']
+        required: [true, "require email address!"],
+        unique: [true, "Your email is already used."],
     },
     password: {
         type: String,
-        required: [true, 'require password'],
-        min: [8, 'min password length is 8 characters.']
+        required: [true, "require password"],
+        min: [8, "min password length is 8 characters."],
     },
     avatar: {
         type: String,
-        default: null
+        default: null,
     },
     profile: {
         fullname: {
             type: String,
         },
         address: {
-            type: String
+            type: String,
         },
         city: {
-            type: String
+            type: String,
         },
         country: {
-            type: String
+            type: String,
         },
-        post: [
-            {
-                type: mongoose_2.default.Types.ObjectId,
-                ref: 'post'
-            }
-        ]
-    }
+    },
+    post: [
+        {
+            type: mongoose_2.default.Types.ObjectId,
+            ref: "post",
+        },
+    ],
 }, { timestamps: true });
-exports.default = mongoose_1.model('user', userSchema);
+exports.default = mongoose_1.model("user", userSchema);
 //# sourceMappingURL=user.js.map

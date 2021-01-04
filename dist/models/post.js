@@ -8,18 +8,18 @@ var mongoose_2 = __importDefault(require("mongoose"));
 var postSchema = new mongoose_1.Schema({
     body: {
         type: String,
-        required: [true, 'tell your feeling.']
+        required: [true, "tell your feeling."],
     },
     user: {
         type: mongoose_2.default.Types.ObjectId,
-        ref: 'user'
+        ref: "user",
     },
     comments: [
         {
             type: mongoose_2.default.Types.ObjectId,
-            ref: 'comment'
-        }
-    ]
+            ref: "comment",
+        },
+    ],
 }, { timestamps: true });
-exports.default = mongoose_1.model('post', postSchema);
+exports.default = mongoose_1.model("post", postSchema);
 //# sourceMappingURL=post.js.map
