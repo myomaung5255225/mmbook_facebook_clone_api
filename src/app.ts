@@ -5,6 +5,7 @@ import User from "./routes/user";
 import errors from "./middleware/errors";
 import path from "path";
 import { v4 } from "uuid";
+import Post from "./routes/post";
 import multer, { FileFilterCallback } from "multer";
 dotenv.config();
 const db = process.env.DB || "";
@@ -43,6 +44,7 @@ mongoose
     });
     app.use(express.json());
     app.use("/api/v1/user", User);
+    app.use("/api/v1/post", Post);
     app.use(errors);
   })
   .catch((err) => {

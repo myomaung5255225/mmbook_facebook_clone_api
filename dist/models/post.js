@@ -20,6 +20,10 @@ var postSchema = new mongoose_1.Schema({
             ref: "comment",
         },
     ],
+    image: {
+        type: String,
+        default: null,
+    },
 }, { timestamps: true });
 exports.default = mongoose_1.model("post", postSchema);
 //# sourceMappingURL=post.js.map

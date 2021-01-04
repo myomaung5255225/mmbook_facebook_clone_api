@@ -17,6 +17,10 @@ const postSchema = new Schema(
         ref: "comment",
       },
     ],
+    image: {
+      type: String,
+      default: null,
+    },
   },
   { timestamps: true }
 );
